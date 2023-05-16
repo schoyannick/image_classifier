@@ -58,7 +58,7 @@ class CardClassifier:
             metrics=["accuracy"],
         )
 
-        epochs = 20
+        epochs = 40
         model.fit(train_ds, validation_data=val_ds, epochs=epochs)
 
         return (model, class_names)
