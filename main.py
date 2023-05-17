@@ -57,4 +57,4 @@ table1 = Table(
 
 while 1:
     table1.handle_action()
-    time.sleep(random.uniform(1, 7))
+    time.sleep(random.uniform(1, 3))

@@ -1,4 +1,6 @@
+from ctypes import windll
 from enum import Enum
+import math
 from image_classifier.card_classifier import (
     img_height as card_img_height,
     img_width as card_img_width,
@@ -15,7 +17,14 @@ from PIL import ImageGrab
 import tensorflow as tf
 import numpy as np
 import os
+import re
 import time
+from my_types import Suit
+from hand_strength import HandStrength
+import mouse
+import random
+import pyautogui
+import win32api, win32con
 
 
 class DealerPosition(Enum):
@@ -25,22 +34,13 @@ class DealerPosition(Enum):
     UTG = 4
 
 
-class Suit(Enum):
-    CLUB = "CLUB"
-    HEART = "HEART"
-    SPADE = "SPADE"
-    DIAMOND = "DIAMOND"
-
-
 class Card:
     suit: Suit
-    type: int
-    full_name = ""
+    card_type: int
 
-    def __init__(self, suit, type, image) -> None:
+    def __init__(self, suit, card_type) -> None:
         self.suit = suit
-        self.type = type
-        self.image = image
+        self.card_type = card_type
 
 
 class Table:
@@ -65,6 +65,13 @@ class Table:
 
     dealer_button_class_names: any
     dealer_button_model: any
+
+    my_table_position: DealerPosition
+
+    hand_strength: HandStrength
+
+    mouse_x = 0
+    mouse_y = 0
 
     i = 0
 
@@ -101,6 +108,8 @@ class Table:
         self.right_dealer_pos = right_dealer_pos
         self.bottom_dealer_pos = bottom_dealer_pos
         self.left_dealer_pos = left_dealer_pos
+
+        self.hand_strength = HandStrength()
 
     def get_image_score(self, img_path, pos, height, width, model):
         snapshot = ImageGrab.grab(pos)
@@ -147,9 +156,56 @@ class Table:
 
         return DealerPosition.UTG
 
+    def get_card_enum(self, card_suit):
+        if card_suit == "Heart":
+            return Suit.HEART
+        if card_suit == "Club":
+            return Suit.CLUB
+        if card_suit == "Spade":
+            return Suit.SPADE
+        return Suit.DIAMOND
+
+    def get_hand_strength(self):
+        if not self.left_card or not self.right_card:
+            return 0
+        return self.hand_strength.get_hand_strength(self.left_card, self.right_card)
+
+    def decide_action(self):
+        strength = self.get_hand_strength()
+        if self.my_table_position == DealerPosition.UTG:
+            return strength >= 0.7
+        if self.my_table_position == DealerPosition.BUTTON:
+            return strength >= 0.68
+        if self.my_table_position == DealerPosition.SMALL_BLIND:
+            return strength >= 0.60
+        return strength >= 0.7
+
+    def move_mouse(self, x, y):
+        pyautogui.moveTo(x, y, duration=0.5)
+        pyautogui.click()
+
+    def click_call(self):
+        left, top, right, bottom = self.call_pos
+        use_hot_key = random.random() < 0.4
+        if use_hot_key:
+            x = math.floor((left + right) / 2 + random.uniform(-10, 10)) - 100
+            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3)) - 200
+            pyautogui.moveTo(x, y, duration=0.5)
+            pyautogui.press("f2")
+        else:
+            x = math.floor((left + right) / 2 + random.uniform(-10, 10))
+            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3))
+            self.move_mouse(x, y)
+
+    def click_fold(self):
+        left, top, right, bottom = self.fold_pos
+        x = math.floor((left + right) / 2 + random.uniform(-10, 10))
+        y = math.floor((top + bottom) / 2 + random.uniform(-3, 3))
+        self.move_mouse(x, y)
+
     def handle_action(self):
         # get my position
-        my_table_position = self.get_dealer_position()
+        self.my_table_position = self.get_dealer_position()
         call_button = self.get_action_button(True)
         fold_button = self.get_action_button(False)
 
@@ -163,6 +219,11 @@ class Table:
             )
 
             print(self.card_class_names[np.argmax(left_score)])
+            left_card_name = self.card_class_names[np.argmax(left_score)]
+            split_left_card = re.findall("[A-Z][^A-Z]*", left_card_name)
+            self.left_card = Card(
+                self.get_card_enum(split_left_card[0]), split_left_card[1]
+            )
 
             right_score = self.get_image_score(
                 "temp/right_card.png",
@@ -173,11 +234,27 @@ class Table:
             )
 
             print(self.card_class_names[np.argmax(right_score)])
+            right_card_name = self.card_class_names[np.argmax(right_score)]
+            split_right_card = re.findall("[A-Z][^A-Z]*", right_card_name)
+            self.right_card = Card(
+                self.get_card_enum(split_right_card[0]), split_right_card[1]
+            )
 
             self.check_image(True, self.i)
             self.i += 1
             self.check_image(False, self.i)
             self.i += 1
+
+            print(self.get_hand_strength())
+            should_push = self.decide_action()
+            print(should_push)
+            if should_push:
+                self.click_call()
+            else:
+                self.click_fold()
+
+            if random.random() > 0.4:
+                pyautogui.moveTo(random.randrange(300, 800), random.randrange(100, 700))
 
     def check_image(self, isLeft, i):
         img_path = "temp/{}.png".format(i)
