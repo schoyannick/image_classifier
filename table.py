@@ -12,12 +12,16 @@ from image_classifier.dealer_button_classifier import (
     img_height as dealer_button_img_height,
     img_width as dealer_button_img_width,
 )
+from image_classifier.my_turn_classifier import (
+    img_height as my_turn_img_height,
+    img_width as my_turn_img_width,
+)
 from PIL import ImageGrab
 import tensorflow as tf
 import numpy as np
 import os
 import re
-from my_types import Suit
+from my_types import Suit, Action
 from hand_strength import HandStrength
 import random
 import pyautogui
@@ -66,6 +70,8 @@ class Table:
 
     hand_strength: HandStrength
 
+    my_turn_pos: any
+
     mouse_x = 0
     mouse_y = 0
 
@@ -87,6 +93,9 @@ class Table:
         dealer_button_class_names,
         bet_button_model,
         bet_button_class_names,
+        my_turn_pos,
+        my_turn_model,
+        my_turn_class_names,
     ):
         self.left_card_pos = left_card_pos
         self.right_card_pos = right_card_pos
@@ -104,6 +113,10 @@ class Table:
         self.right_dealer_pos = right_dealer_pos
         self.bottom_dealer_pos = bottom_dealer_pos
         self.left_dealer_pos = left_dealer_pos
+
+        self.my_turn_pos = my_turn_pos
+        self.my_turn_model = my_turn_model
+        self.my_turn_class_names = my_turn_class_names
 
         self.hand_strength = HandStrength()
 
@@ -166,15 +179,48 @@ class Table:
             return 0
         return self.hand_strength.get_hand_strength(self.left_card, self.right_card)
 
-    def decide_action(self):
+    def is_my_turn(self):
+        score = self.get_image_score(
+            "temp/my_turn.png",
+            self.my_turn_pos,
+            my_turn_img_height,
+            my_turn_img_width,
+            self.my_turn_model,
+        )
+
+        action = self.my_turn_class_names[np.argmax(score)]
+
+        return action == "MyTurn"
+
+    def decide_action(self) -> Action:
         strength = self.get_hand_strength()
+        if strength >= 0.8 and random.random() > 0.4:
+            return Action.ALL_IN
+
+        my_turn = self.is_my_turn()
+        if not my_turn:
+            return Action.NOTHING
+
         if self.my_table_position == DealerPosition.UTG:
-            return strength >= random.uniform(0.69, 0.71)
+            if strength >= random.uniform(0.69, 0.71):
+                return Action.ALL_IN
+            else:
+                return Action.FOLD
         if self.my_table_position == DealerPosition.BUTTON:
-            return strength >= random.uniform(0.67, 0.69)
+            if strength >= random.uniform(0.67, 0.69):
+                return Action.ALL_IN
+            else:
+                return Action.FOLD
         if self.my_table_position == DealerPosition.SMALL_BLIND:
-            return strength >= random.uniform(0.59, 0.61)
-        return strength >= random.uniform(0.68, 0.7)
+            if strength >= random.uniform(0.59, 0.61):
+                return Action.ALL_IN
+            else:
+                return Action.FOLD
+
+        if strength >= random.uniform(0.68, 0.7):
+            return Action.ALL_IN
+        else:
+            return Action.FOLD
 
     def move_mouse(self, x, y):
         pyautogui.moveTo(x, y, duration=0.5)
@@ -219,6 +265,10 @@ class Table:
         call_button = self.get_action_button(True)
         fold_button = self.get_action_button(False)
 
+        img_path = "temp/turn-{}.png".format(random.randrange(1, 99999))
+        snapshot = ImageGrab.grab(bbox=self.my_turn_pos)
+        snapshot.save(img_path)
+
         if call_button == "AllIn" and fold_button == "Fold":
             left_score = self.get_image_score(
                 "temp/left_card.png",
@@ -261,9 +311,12 @@ class Table:
             self.check_image(False, self.i)
             self.i += 1
 
-            should_push = self.decide_action()
+            my_action = self.decide_action()
 
-            if should_push:
+            if my_action == Action.NOTHING:
+                return
+
+            if my_action == Action.ALL_IN:
                 self.click_call()
             else:
                 self.click_fold()
@@ -285,11 +338,11 @@ class Table:
         predictions = self.card_model.predict(img_array)
         score = tf.nn.softmax(predictions[0])
 
-        if self.card_class_names[np.argmax(score)] != "NoCard":
-            img_path2 = "temp/{}-{}.png".format(
-                self.card_class_names[np.argmax(score)], i
-            )
-            snapshot.save(img_path2)
+        # if self.card_class_names[np.argmax(score)] != "NoCard":
+        #     img_path2 = "temp/{}-{}.png".format(
+        #         self.card_class_names[np.argmax(score)], i
+        #     )
+        #     snapshot.save(img_path2)
 
         os.remove(img_path)
 

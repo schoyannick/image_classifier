@@ -6,3 +6,9 @@ class Suit(Enum):
     HEART = "Heart"
     SPADE = "Spade"
     DIAMOND = "Diamond"
+
+
+class Action(Enum):
+    ALL_IN = "ALL_IN"
+    FOLD = "FOLD"
+    NOTHING = "NOTHING"

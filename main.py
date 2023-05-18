@@ -4,15 +4,16 @@ import pyautogui
 from image_classifier.card_classifier import CardClassifier
 from image_classifier.bet_button_classifier import BetButtonClassifier
 from image_classifier.dealer_button_classifier import DealerButtonClassifier
+from image_classifier.my_turn_classifier import MyTurnClassifier
 
 from table_config import TableConfig
 import random
 
 
-# table3_left_card_pos = (1271, 906, 1307, 950)
-# img_path1 = "temp/left.png"
-# snapshot = ImageGrab.grab(bbox=table3_left_card_pos)
-# snapshot.save(img_path1)
+# pos = (550, 488, 650, 510)
+# img_path = "temp/left.png"
+# snapshot = ImageGrab.grab(bbox=pos)
+# snapshot.save(img_path)
 
 
 # (card_model, card_class_names) = CardClassifier().train()
@@ -27,6 +28,9 @@ bet_button_class_names = BetButtonClassifier().load_class_names()
 dealer_button_model = DealerButtonClassifier().load_model()
 dealer_button_class_names = DealerButtonClassifier().load_class_names()
 
+# (my_turn_model, my_turn_class_names) = MyTurnClassifier().train()
+my_turn_model = MyTurnClassifier().load_model()
+my_turn_class_names = MyTurnClassifier().load_class_names()
 
 table_config = TableConfig()
 table1 = table_config.get_table_1(
@@ -36,6 +40,8 @@ table1 = table_config.get_table_1(
     dealer_button_class_names,
     bet_button_model,
     bet_button_class_names,
+    my_turn_model,
+    my_turn_class_names,
 )
 
 table2 = table_config.get_table_2(
@@ -45,6 +51,8 @@ table2 = table_config.get_table_2(
     dealer_button_class_names,
     bet_button_model,
     bet_button_class_names,
+    my_turn_model,
+    my_turn_class_names,
 )
 
 table3 = table_config.get_table_3(
@@ -54,6 +62,8 @@ table3 = table_config.get_table_3(
     dealer_button_class_names,
     bet_button_model,
     bet_button_class_names,
+    my_turn_model,
+    my_turn_class_names,
 )
 
 table4 = table_config.get_table_4(
@@ -63,6 +73,8 @@ table4 = table_config.get_table_4(
     dealer_button_class_names,
     bet_button_model,
     bet_button_class_names,
+    my_turn_model,
+    my_turn_class_names,
 )
 
 while 1:

@@ -10,10 +10,14 @@ class TableConfig:
         dealer_button_class_names,
         bet_button_model,
         bet_button_class_names,
+        my_turn_model,
+        my_turn_class_names,
     ):
         # TABLE 1
         table1_left_card_pos = (559, 386, 595, 430)
         table1_right_card_pos = (598, 386, 634, 430)
+
+        table1_my_turn_pos = (550, 488, 650, 510)
 
         table1_fold_pos = (710, 445, 830, 510)
         table1_call_pos = (835, 445, 955, 510)
@@ -38,6 +42,9 @@ class TableConfig:
             dealer_button_class_names,
             bet_button_model,
             bet_button_class_names,
+            table1_my_turn_pos,
+            my_turn_model,
+            my_turn_class_names,
         )
 
     def get_table_2(
@@ -48,9 +55,18 @@ class TableConfig:
         dealer_button_class_names,
         bet_button_model,
         bet_button_class_names,
+        my_turn_model,
+        my_turn_class_names,
     ):
         table2_left_card_pos = (1271, 386, 1307, 430)
         table2_right_card_pos = (1310, 386, 1346, 430)
+
+        table2_my_turn_pos = (
+            table2_left_card_pos[0] - 9,
+            table2_left_card_pos[1] + 102,
+            table2_left_card_pos[2] + 55,
+            table2_left_card_pos[3] + 80,
+        )
 
         table2_fold_pos = (1422, 445, 1542, 510)
         table2_call_pos = (1547, 445, 1667, 510)
@@ -90,6 +106,9 @@ class TableConfig:
             dealer_button_class_names,
             bet_button_model,
             bet_button_class_names,
+            table2_my_turn_pos,
+            my_turn_model,
+            my_turn_class_names,
         )
 
     def get_table_3(
@@ -100,6 +119,8 @@ class TableConfig:
         dealer_button_class_names,
         bet_button_model,
         bet_button_class_names,
+        my_turn_model,
+        my_turn_class_names,
     ):
         table3_left_card_pos = (559, 906, 595, 950)
         table3_right_card_pos = (
@@ -107,6 +128,13 @@ class TableConfig:
             table3_left_card_pos[1],
             table3_left_card_pos[2] + 39,
             table3_left_card_pos[3],
+        )
+
+        table3_my_turn_pos = (
+            table3_left_card_pos[0] - 9,
+            table3_left_card_pos[1] + 102,
+            table3_left_card_pos[2] + 55,
+            table3_left_card_pos[3] + 80,
         )
 
         table3_fold_pos = (
@@ -162,6 +190,9 @@ class TableConfig:
             dealer_button_class_names,
             bet_button_model,
             bet_button_class_names,
+            table3_my_turn_pos,
+            my_turn_model,
+            my_turn_class_names,
         )
 
     def get_table_4(
@@ -172,6 +203,8 @@ class TableConfig:
         dealer_button_class_names,
         bet_button_model,
         bet_button_class_names,
+        my_turn_model,
+        my_turn_class_names,
     ):
         table4_left_card_pos = (1271, 906, 1307, 950)
         table4_right_card_pos = (
@@ -179,6 +212,13 @@ class TableConfig:
             table4_left_card_pos[1],
             table4_left_card_pos[2] + 39,
             table4_left_card_pos[3],
+        )
+
+        table4_my_turn_pos = (
+            table4_left_card_pos[0] - 9,
+            table4_left_card_pos[1] + 102,
+            table4_left_card_pos[2] + 55,
+            table4_left_card_pos[3] + 80,
         )
 
         table4_fold_pos = (
@@ -234,4 +274,7 @@ class TableConfig:
             dealer_button_class_names,
             bet_button_model,
             bet_button_class_names,
+            table4_my_turn_pos,
+            my_turn_model,
+            my_turn_class_names,
         )
