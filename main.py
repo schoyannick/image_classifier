@@ -93,17 +93,17 @@ table4 = table_config.get_table_4(
 while 1:
     if random.random() > 0.4:
         table1.handle_action()
-        time.sleep(random.uniform(0.1, 0.4))
+        time.sleep(random.uniform(0.1, 0.15))
         table2.handle_action()
-        time.sleep(random.uniform(0.2, 0.3))
+        time.sleep(random.uniform(0.2, 0.2))
         table3.handle_action()
         time.sleep(random.uniform(0.1, 0.3))
         table4.handle_action()
     else:
         table3.handle_action()
-        time.sleep(random.uniform(0.2, 0.3))
+        time.sleep(random.uniform(0.1, 0.25))
         table2.handle_action()
         time.sleep(random.uniform(0.1, 0.2))
         table4.handle_action()
-        time.sleep(random.uniform(0, 0.3))
+        time.sleep(random.uniform(0, 0.1))
         table1.handle_action()
