@@ -12,11 +12,17 @@ class TableConfig:
         bet_button_class_names,
         my_turn_model,
         my_turn_class_names,
+        action_model,
+        action_class_names,
     ):
         table1_left_card_pos = (559, 386, 595, 430)
         table1_right_card_pos = (598, 386, 634, 430)
 
         table1_my_turn_pos = (550, 488, 650, 510)
+
+        table1_top_action_pos = (582, 142, 635, 195)
+        table1_right_action_pos = (797, 230, 850, 283)
+        table1_left_action_pos = (356, 225, 409, 278)
 
         table1_fold_pos = (710, 445, 830, 510)
         table1_call_pos = (835, 445, 955, 510)
@@ -44,6 +50,11 @@ class TableConfig:
             table1_my_turn_pos,
             my_turn_model,
             my_turn_class_names,
+            action_model,
+            action_class_names,
+            table1_top_action_pos,
+            table1_right_action_pos,
+            table1_left_action_pos,
         )
 
     def get_table_2(
@@ -56,7 +67,12 @@ class TableConfig:
         bet_button_class_names,
         my_turn_model,
         my_turn_class_names,
+        action_model,
+        action_class_names,
     ):
+        table1_left_card_pos = (559, 386, 595, 430)
+        table1_top_action_pos = (582, 142, 635, 195)
+
         table2_left_card_pos = (1271, 386, 1307, 430)
         table2_right_card_pos = (1310, 386, 1346, 430)
 
@@ -65,6 +81,25 @@ class TableConfig:
             table2_left_card_pos[1] + 102,
             table2_left_card_pos[2] + 55,
             table2_left_card_pos[3] + 80,
+        )
+
+        table2_top_action_pos = (
+            table2_left_card_pos[0] + 23,
+            table2_left_card_pos[1] - 244,
+            table2_left_card_pos[2] + 40,
+            table2_left_card_pos[3] - 235,
+        )
+        table2_right_action_pos = (
+            table2_left_card_pos[0] + 238,
+            table2_left_card_pos[1] - 156,
+            table2_left_card_pos[2] + 255,
+            table2_left_card_pos[3] - 147,
+        )
+        table2_left_action_pos = (
+            table2_left_card_pos[0] - 203,
+            table2_left_card_pos[1] - 161,
+            table2_left_card_pos[2] - 186,
+            table2_left_card_pos[3] - 152,
         )
 
         table2_fold_pos = (1422, 445, 1542, 510)
@@ -108,6 +143,11 @@ class TableConfig:
             table2_my_turn_pos,
             my_turn_model,
             my_turn_class_names,
+            action_model,
+            action_class_names,
+            table2_top_action_pos,
+            table2_right_action_pos,
+            table2_left_action_pos,
         )
 
     def get_table_3(
@@ -120,6 +160,8 @@ class TableConfig:
         bet_button_class_names,
         my_turn_model,
         my_turn_class_names,
+        action_model,
+        action_class_names,
     ):
         table3_left_card_pos = (559, 906, 595, 950)
         table3_right_card_pos = (
@@ -134,6 +176,25 @@ class TableConfig:
             table3_left_card_pos[1] + 102,
             table3_left_card_pos[2] + 55,
             table3_left_card_pos[3] + 80,
+        )
+
+        table3_top_action_pos = (
+            table3_left_card_pos[0] + 23,
+            table3_left_card_pos[1] - 244,
+            table3_left_card_pos[2] + 40,
+            table3_left_card_pos[3] - 235,
+        )
+        table3_right_action_pos = (
+            table3_left_card_pos[0] + 238,
+            table3_left_card_pos[1] - 156,
+            table3_left_card_pos[2] + 255,
+            table3_left_card_pos[3] - 147,
+        )
+        table3_left_action_pos = (
+            table3_left_card_pos[0] - 203,
+            table3_left_card_pos[1] - 161,
+            table3_left_card_pos[2] - 186,
+            table3_left_card_pos[3] - 152,
         )
 
         table3_fold_pos = (
@@ -192,6 +253,11 @@ class TableConfig:
             table3_my_turn_pos,
             my_turn_model,
             my_turn_class_names,
+            action_model,
+            action_class_names,
+            table3_top_action_pos,
+            table3_right_action_pos,
+            table3_left_action_pos,
         )
 
     def get_table_4(
@@ -204,6 +270,8 @@ class TableConfig:
         bet_button_class_names,
         my_turn_model,
         my_turn_class_names,
+        action_model,
+        action_class_names,
     ):
         table4_left_card_pos = (1271, 906, 1307, 950)
         table4_right_card_pos = (
@@ -218,6 +286,25 @@ class TableConfig:
             table4_left_card_pos[1] + 102,
             table4_left_card_pos[2] + 55,
             table4_left_card_pos[3] + 80,
+        )
+
+        table4_top_action_pos = (
+            table4_left_card_pos[0] + 23,
+            table4_left_card_pos[1] - 244,
+            table4_left_card_pos[2] + 40,
+            table4_left_card_pos[3] - 235,
+        )
+        table4_right_action_pos = (
+            table4_left_card_pos[0] + 238,
+            table4_left_card_pos[1] - 156,
+            table4_left_card_pos[2] + 255,
+            table4_left_card_pos[3] - 147,
+        )
+        table4_left_action_pos = (
+            table4_left_card_pos[0] - 203,
+            table4_left_card_pos[1] - 161,
+            table4_left_card_pos[2] - 186,
+            table4_left_card_pos[3] - 152,
         )
 
         table4_fold_pos = (
@@ -276,4 +363,9 @@ class TableConfig:
             table4_my_turn_pos,
             my_turn_model,
             my_turn_class_names,
+            action_model,
+            action_class_names,
+            table4_top_action_pos,
+            table4_right_action_pos,
+            table4_left_action_pos,
         )

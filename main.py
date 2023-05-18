@@ -5,6 +5,7 @@ from image_classifier.card_classifier import CardClassifier
 from image_classifier.bet_button_classifier import BetButtonClassifier
 from image_classifier.dealer_button_classifier import DealerButtonClassifier
 from image_classifier.my_turn_classifier import MyTurnClassifier
+from image_classifier.action_classifier import ActionClassifier
 
 from table_config import TableConfig
 import random
@@ -32,6 +33,10 @@ dealer_button_class_names = DealerButtonClassifier().load_class_names()
 my_turn_model = MyTurnClassifier().load_model()
 my_turn_class_names = MyTurnClassifier().load_class_names()
 
+# (action_model, action_class_names) = ActionClassifier().train()
+action_model = ActionClassifier().load_model()
+action_class_names = ActionClassifier().load_class_names()
+
 table_config = TableConfig()
 table1 = table_config.get_table_1(
     card_model,
@@ -42,6 +47,8 @@ table1 = table_config.get_table_1(
     bet_button_class_names,
     my_turn_model,
     my_turn_class_names,
+    action_model,
+    action_class_names,
 )
 
 table2 = table_config.get_table_2(
@@ -53,6 +60,8 @@ table2 = table_config.get_table_2(
     bet_button_class_names,
     my_turn_model,
     my_turn_class_names,
+    action_model,
+    action_class_names,
 )
 
 table3 = table_config.get_table_3(
@@ -64,6 +73,8 @@ table3 = table_config.get_table_3(
     bet_button_class_names,
     my_turn_model,
     my_turn_class_names,
+    action_model,
+    action_class_names,
 )
 
 table4 = table_config.get_table_4(
@@ -75,6 +86,8 @@ table4 = table_config.get_table_4(
     bet_button_class_names,
     my_turn_model,
     my_turn_class_names,
+    action_model,
+    action_class_names,
 )
 
 while 1:
@@ -94,5 +107,3 @@ while 1:
         table4.handle_action()
         time.sleep(random.uniform(0, 0.3))
         table1.handle_action()
-
-# pyautogui.mouseInfo()

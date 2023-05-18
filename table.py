@@ -16,6 +16,10 @@ from image_classifier.my_turn_classifier import (
     img_height as my_turn_img_height,
     img_width as my_turn_img_width,
 )
+from image_classifier.action_classifier import (
+    img_height as action_img_height,
+    img_width as action_img_width,
+)
 from PIL import ImageGrab
 import tensorflow as tf
 import numpy as np
@@ -96,6 +100,11 @@ class Table:
         my_turn_pos,
         my_turn_model,
         my_turn_class_names,
+        action_model,
+        action_class_names,
+        top_action_pos,
+        right_action_pos,
+        left_action_pos,
     ):
         self.left_card_pos = left_card_pos
         self.right_card_pos = right_card_pos
@@ -117,6 +126,13 @@ class Table:
         self.my_turn_pos = my_turn_pos
         self.my_turn_model = my_turn_model
         self.my_turn_class_names = my_turn_class_names
+
+        self.action_model = action_model
+        self.action_class_names = action_class_names
+
+        self.top_action_pos = top_action_pos
+        self.right_action_pos = right_action_pos
+        self.left_action_pos = left_action_pos
 
         self.hand_strength = HandStrength()
 
@@ -192,35 +208,110 @@ class Table:
 
         return action == "MyTurn"
 
+    def get_all_in_players(self):
+        count = 0
+        score_action_top = self.get_image_score(
+            "temp/action_top.png",
+            self.top_action_pos,
+            action_img_height,
+            action_img_width,
+            self.action_model,
+        )
+
+        action_top = self.action_class_names[np.argmax(score_action_top)]
+        if action_top == "AllIn":
+            count += 1
+
+        score_action_right = self.get_image_score(
+            "temp/action_right.png",
+            self.right_action_pos,
+            action_img_height,
+            action_img_width,
+            self.action_model,
+        )
+
+        action_right = self.action_class_names[np.argmax(score_action_right)]
+        if action_right == "AllIn":
+            count += 1
+
+        score_action_left = self.get_image_score(
+            "temp/action_left.png",
+            self.left_action_pos,
+            action_img_height,
+            action_img_width,
+            self.action_model,
+        )
+
+        action_left = self.action_class_names[np.argmax(score_action_left)]
+        if action_left == "AllIn":
+            count += 1
+
+        return count
+
     def decide_action(self) -> Action:
         strength = self.get_hand_strength()
         if strength >= 0.8 and random.random() > 0.4:
             return Action.ALL_IN
 
+        if strength < 0.3 and random.random() > 0.4:
+            return Action.FOLD
+        
         my_turn = self.is_my_turn()
         if not my_turn:
             return Action.NOTHING
 
         if self.my_table_position == DealerPosition.UTG:
-            if strength >= random.uniform(0.69, 0.71):
-                return Action.ALL_IN
-            else:
-                return Action.FOLD
-        if self.my_table_position == DealerPosition.BUTTON:
-            if strength >= random.uniform(0.67, 0.69):
-                return Action.ALL_IN
-            else:
-                return Action.FOLD
-        if self.my_table_position == DealerPosition.SMALL_BLIND:
-            if strength >= random.uniform(0.59, 0.61):
+            if strength >= random.uniform(0.72, 0.74):
                 return Action.ALL_IN
             else:
                 return Action.FOLD
 
-        if strength >= random.uniform(0.68, 0.7):
-            return Action.ALL_IN
-        else:
-            return Action.FOLD
+        all_in_count = self.get_all_in_players()
+        if self.my_table_position == DealerPosition.BUTTON:
+            match all_in_count:
+                case 0:
+                    if strength >= random.uniform(0.67, 0.69):
+                        return Action.ALL_IN
+                    else:
+                        return Action.FOLD
+                case 1:
+                    if strength >= random.uniform(0.77, 0.8):
+                        return Action.ALL_IN
+                    else:
+                        return Action.FOLD
+
+        if self.my_table_position == DealerPosition.SMALL_BLIND:
+            match all_in_count:
+                case 0:
+                    if strength >= random.uniform(0.55, 0.57):
+                        return Action.ALL_IN
+                    else:
+                        return Action.FOLD
+                case 1:
+                    if strength >= random.uniform(0.75, 0.8):
+                        return Action.ALL_IN
+                    else:
+                        return Action.FOLD
+                case 2:
+                    if strength >= 0.8:
+                        return Action.ALL_IN
+                    else:
+                        return Action.FOLD
+
+        match all_in_count:
+            case 0:
+                return Action.FOLD
+            case 1:
+                if strength >= random.uniform(0.62, 0.64):
+                    return Action.ALL_IN
+                else:
+                    return Action.FOLD
+            case 2 | 3:
+                if strength >= 0.8:
+                    return Action.ALL_IN
+                else:
+                    return Action.FOLD
+        return Action.FOLD
 
     def move_mouse(self, x, y):
         pyautogui.moveTo(x, y, duration=0.5)
@@ -265,10 +356,6 @@ class Table:
         call_button = self.get_action_button(True)
         fold_button = self.get_action_button(False)
 
-        img_path = "temp/turn.png"
-        snapshot = ImageGrab.grab(bbox=self.my_turn_pos)
-        snapshot.save(img_path)
-
         if call_button == "AllIn" and fold_button == "Fold":
             left_score = self.get_image_score(
                 "temp/left_card.png",
@@ -309,17 +396,27 @@ class Table:
             # self.check_image(True, self.i)
             # self.i += 1
             # self.check_image(False, self.i)
-            self.i += 1
+            # self.i += 1
 
             my_action = self.decide_action()
 
             if my_action == Action.NOTHING:
                 return
 
-            pos = (582, 142, 635, 195)
-            img_path = "temp/bet-{}.png".format(self.i)
-            snapshot = ImageGrab.grab(bbox=pos)
-            snapshot.save(img_path)
+            # img_path = "temp/bet-{}.png".format(self.i)
+            # snapshot = ImageGrab.grab(bbox=self.left_action_pos)
+            # snapshot.save(img_path)
+            # self.i += 1
+
+            # img_path = "temp/bet-{}.png".format(self.i)
+            # snapshot = ImageGrab.grab(bbox=self.right_action_pos)
+            # snapshot.save(img_path)
+            # self.i += 1
+
+            # img_path = "temp/bet-{}.png".format(self.i)
+            # snapshot = ImageGrab.grab(bbox=self.top_action_pos)
+            # snapshot.save(img_path)
+            # self.i += 1
 
             if my_action == Action.ALL_IN:
                 self.click_call()
