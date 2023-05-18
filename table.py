@@ -25,26 +25,10 @@ import tensorflow as tf
 import numpy as np
 import os
 import re
-from my_types import Suit, Action
+from my_types import Suit, Action, DealerPosition, Card
 from hand_strength import HandStrength
 import random
 import pyautogui
-
-
-class DealerPosition(Enum):
-    BUTTON = 1
-    BIG_BLIND = 2
-    SMALL_BLIND = 3
-    UTG = 4
-
-
-class Card:
-    suit: Suit
-    card_type: int
-
-    def __init__(self, suit, card_type) -> None:
-        self.suit = suit
-        self.card_type = card_type
 
 
 class Table:
@@ -145,6 +129,8 @@ class Table:
 
         predictions = model.predict(img_array)
         score = tf.nn.softmax(predictions[0])
+
+        os.remove(img_path)
 
         return score
 
@@ -255,7 +241,7 @@ class Table:
 
         if strength < 0.3 and random.random() > 0.4:
             return Action.FOLD
-        
+
         my_turn = self.is_my_turn()
         if not my_turn:
             return Action.NOTHING
@@ -393,30 +379,15 @@ class Table:
                 self.right_card = None
                 return
 
-            # self.check_image(True, self.i)
-            # self.i += 1
-            # self.check_image(False, self.i)
-            # self.i += 1
+            self.check_image(True, self.i)
+            self.i += 1
+            self.check_image(False, self.i)
+            self.i += 1
 
             my_action = self.decide_action()
 
             if my_action == Action.NOTHING:
                 return
-
-            # img_path = "temp/bet-{}.png".format(self.i)
-            # snapshot = ImageGrab.grab(bbox=self.left_action_pos)
-            # snapshot.save(img_path)
-            # self.i += 1
-
-            # img_path = "temp/bet-{}.png".format(self.i)
-            # snapshot = ImageGrab.grab(bbox=self.right_action_pos)
-            # snapshot.save(img_path)
-            # self.i += 1
-
-            # img_path = "temp/bet-{}.png".format(self.i)
-            # snapshot = ImageGrab.grab(bbox=self.top_action_pos)
-            # snapshot.save(img_path)
-            # self.i += 1
 
             if my_action == Action.ALL_IN:
                 self.click_call()
@@ -426,27 +397,29 @@ class Table:
             if random.random() > 0.4:
                 pyautogui.moveTo(random.randrange(300, 800), random.randrange(100, 700))
 
-    # def check_image(self, isLeft, i):
-    #     img_path = "temp/{}.png".format(i)
-    #     card_pos = self.left_card_pos if isLeft else self.right_card_pos
-    #     snapshot = ImageGrab.grab(card_pos)
-    #     snapshot.save(img_path)
-    #     img = tf.keras.utils.load_img(
-    #         img_path, target_size=(card_img_height, card_img_width)
-    #     )
-    #     img_array = tf.keras.utils.img_to_array(img)
-    #     img_array = tf.expand_dims(img_array, 0)
+    def check_image(self, isLeft, i):
+        img_path = "temp/{}.png".format(i)
+        card_pos = self.left_card_pos if isLeft else self.right_card_pos
+        snapshot = ImageGrab.grab(card_pos)
+        snapshot.save(img_path)
+        img = tf.keras.utils.load_img(
+            img_path, target_size=(card_img_height, card_img_width)
+        )
+        img_array = tf.keras.utils.img_to_array(img)
+        img_array = tf.expand_dims(img_array, 0)
 
-    #     predictions = self.card_model.predict(img_array)
-    #     score = tf.nn.softmax(predictions[0])
+        predictions = self.card_model.predict(img_array)
+        score = tf.nn.softmax(predictions[0])
 
-    #     # if self.card_class_names[np.argmax(score)] != "NoCard":
-    #     #     img_path2 = "temp/{}-{}.png".format(
-    #     #         self.card_class_names[np.argmax(score)], i
-    #     #     )
-    #     #     snapshot.save(img_path2)
+        card = self.card_class_names[np.argmax(score)]
+        if card != "NoCard":
+            img_path2 = "card/{}.png".format(i)
 
-    #     os.remove(img_path)
+            if not os.path.exists(card):
+                os.makedirs(card)
+            snapshot.save(card + "/" + img_path2)
+
+        os.remove(img_path)
 
     def get_action_button(self, is_call_button):
         img_path = "temp/{}.png".format("call" if is_call_button else "fold")

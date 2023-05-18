@@ -70,9 +70,6 @@ class TableConfig:
         action_model,
         action_class_names,
     ):
-        table1_left_card_pos = (559, 386, 595, 430)
-        table1_top_action_pos = (582, 142, 635, 195)
-
         table2_left_card_pos = (1271, 386, 1307, 430)
         table2_right_card_pos = (1310, 386, 1346, 430)
 

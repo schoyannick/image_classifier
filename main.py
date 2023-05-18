@@ -1,21 +1,27 @@
 import time
 from PIL import ImageGrab
 import pyautogui
+from hand_strength import HandStrength
 from image_classifier.card_classifier import CardClassifier
 from image_classifier.bet_button_classifier import BetButtonClassifier
 from image_classifier.dealer_button_classifier import DealerButtonClassifier
 from image_classifier.my_turn_classifier import MyTurnClassifier
 from image_classifier.action_classifier import ActionClassifier
+from my_types import Card, Suit
 
 from table_config import TableConfig
 import random
 
 
-# pos = (582, 142, 635, 195)
-# img_path = "temp/left.png"
+# pos = (850, 450, 955, 520)
+# img_path = "temp/0.png"
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
 
+left_card = Card(Suit.SPADE, "King")
+right_card = Card(Suit.SPADE, "Five")
+hand_strength = HandStrength()
+str = hand_strength.get_hand_strength(left_card, right_card)
 
 # (card_model, card_class_names) = CardClassifier().train()
 card_class_names = CardClassifier().load_class_names()
@@ -107,3 +113,8 @@ while 1:
         table4.handle_action()
         time.sleep(random.uniform(0, 0.1))
         table1.handle_action()
+
+    if random.random() > 0.8:
+        pyautogui.moveTo(
+            random.randrange(0, 1000), random.randrange(0, 1000), duration=0.5
+        )
