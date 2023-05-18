@@ -1,4 +1,3 @@
-from ctypes import windll
 from enum import Enum
 import math
 from image_classifier.card_classifier import (
@@ -18,13 +17,10 @@ import tensorflow as tf
 import numpy as np
 import os
 import re
-import time
 from my_types import Suit
 from hand_strength import HandStrength
-import mouse
 import random
 import pyautogui
-import win32api, win32con
 
 
 class DealerPosition(Enum):
@@ -173,12 +169,12 @@ class Table:
     def decide_action(self):
         strength = self.get_hand_strength()
         if self.my_table_position == DealerPosition.UTG:
-            return strength >= 0.7
+            return strength >= random.uniform(0.69, 0.71)
         if self.my_table_position == DealerPosition.BUTTON:
-            return strength >= 0.68
+            return strength >= random.uniform(0.67, 0.69)
         if self.my_table_position == DealerPosition.SMALL_BLIND:
-            return strength >= 0.60
-        return strength >= 0.7
+            return strength >= random.uniform(0.59, 0.61)
+        return strength >= random.uniform(0.68, 0.7)
 
     def move_mouse(self, x, y):
         pyautogui.moveTo(x, y, duration=0.5)
@@ -188,8 +184,12 @@ class Table:
         left, top, right, bottom = self.call_pos
         use_hot_key = random.random() < 0.4
         if use_hot_key:
-            x = math.floor((left + right) / 2 + random.uniform(-10, 10)) - 100
-            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3)) - 200
+            x = math.floor(
+                (left + right) / 2 + random.uniform(-10, 10)
+            ) - random.randint(50, 150)
+            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3)) - random.randint(
+                150, 350
+            )
             pyautogui.moveTo(x, y, duration=0.5)
             pyautogui.press("f2")
         else:
@@ -199,12 +199,22 @@ class Table:
 
     def click_fold(self):
         left, top, right, bottom = self.fold_pos
-        x = math.floor((left + right) / 2 + random.uniform(-10, 10))
-        y = math.floor((top + bottom) / 2 + random.uniform(-3, 3))
-        self.move_mouse(x, y)
+        use_hot_key = random.random() < 0.6
+        if use_hot_key:
+            x = math.floor(
+                (left + right) / 2 + random.uniform(-10, 10)
+            ) - random.randint(50, 150)
+            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3)) - random.randint(
+                150, 350
+            )
+            pyautogui.moveTo(x, y, duration=0.5)
+            pyautogui.press("f1")
+        else:
+            x = math.floor((left + right) / 2 + random.uniform(-10, 10))
+            y = math.floor((top + bottom) / 2 + random.uniform(-3, 3))
+            self.move_mouse(x, y)
 
     def handle_action(self):
-        # get my position
         self.my_table_position = self.get_dealer_position()
         call_button = self.get_action_button(True)
         fold_button = self.get_action_button(False)
@@ -218,7 +228,6 @@ class Table:
                 self.card_model,
             )
 
-            print(self.card_class_names[np.argmax(left_score)])
             left_card_name = self.card_class_names[np.argmax(left_score)]
             split_left_card = re.findall("[A-Z][^A-Z]*", left_card_name)
             self.left_card = Card(
@@ -233,21 +242,27 @@ class Table:
                 self.card_model,
             )
 
-            print(self.card_class_names[np.argmax(right_score)])
             right_card_name = self.card_class_names[np.argmax(right_score)]
             split_right_card = re.findall("[A-Z][^A-Z]*", right_card_name)
             self.right_card = Card(
                 self.get_card_enum(split_right_card[0]), split_right_card[1]
             )
 
+            if (
+                self.left_card.card_type == "Card"
+                or self.right_card.card_type == "Card"
+            ):
+                self.left_card = None
+                self.right_card = None
+                return
+
             self.check_image(True, self.i)
             self.i += 1
             self.check_image(False, self.i)
             self.i += 1
 
-            print(self.get_hand_strength())
             should_push = self.decide_action()
-            print(should_push)
+
             if should_push:
                 self.click_call()
             else:
@@ -277,11 +292,6 @@ class Table:
             snapshot.save(img_path2)
 
         os.remove(img_path)
-        # print(
-        #     "This image most likely belongs to {} with a {:.2f} percent confidence.".format(
-        #         class_names[np.argmax(score)], 100 * np.max(score)
-        #     )
-        # )
 
     def get_action_button(self, is_call_button):
         img_path = "temp/{}.png".format("call" if is_call_button else "fold")

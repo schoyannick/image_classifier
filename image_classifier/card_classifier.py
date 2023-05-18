@@ -3,6 +3,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 
 batch_size = 32
+
 img_height = 36
 img_width = 44
 
@@ -58,7 +59,26 @@ class CardClassifier:
             metrics=["accuracy"],
         )
 
-        epochs = 40
+        epochs = 20
         model.fit(train_ds, validation_data=val_ds, epochs=epochs)
 
+        self.save_model(model)
+        self.save_class_names(class_names)
         return (model, class_names)
+
+    def save_model(self, model):
+        model.save("saved_model/card_classifier")
+
+    def load_model(self):
+        new_model = tf.keras.models.load_model("saved_model/card_classifier")
+        return new_model
+
+    def save_class_names(self, class_names):
+        with open("saved_model/card_class_names.txt", "w") as f:
+            for line in class_names:
+                f.write(f"{line}\n")
+
+    def load_class_names(self):
+        with open("saved_model/card_class_names.txt") as file:
+            lines = [line.rstrip() for line in file]
+            return lines
