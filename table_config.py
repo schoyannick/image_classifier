@@ -13,7 +13,6 @@ class TableConfig:
         my_turn_model,
         my_turn_class_names,
     ):
-        # TABLE 1
         table1_left_card_pos = (559, 386, 595, 430)
         table1_right_card_pos = (598, 386, 634, 430)
 

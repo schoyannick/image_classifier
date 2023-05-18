@@ -10,7 +10,7 @@ from table_config import TableConfig
 import random
 
 
-# pos = (550, 488, 650, 510)
+# pos = (582, 142, 635, 195)
 # img_path = "temp/left.png"
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)

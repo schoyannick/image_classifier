@@ -265,7 +265,7 @@ class Table:
         call_button = self.get_action_button(True)
         fold_button = self.get_action_button(False)
 
-        img_path = "temp/turn-{}.png".format(random.randrange(1, 99999))
+        img_path = "temp/turn.png"
         snapshot = ImageGrab.grab(bbox=self.my_turn_pos)
         snapshot.save(img_path)
 
@@ -306,15 +306,20 @@ class Table:
                 self.right_card = None
                 return
 
-            self.check_image(True, self.i)
-            self.i += 1
-            self.check_image(False, self.i)
+            # self.check_image(True, self.i)
+            # self.i += 1
+            # self.check_image(False, self.i)
             self.i += 1
 
             my_action = self.decide_action()
 
             if my_action == Action.NOTHING:
                 return
+
+            pos = (582, 142, 635, 195)
+            img_path = "temp/bet-{}.png".format(self.i)
+            snapshot = ImageGrab.grab(bbox=pos)
+            snapshot.save(img_path)
 
             if my_action == Action.ALL_IN:
                 self.click_call()
@@ -324,27 +329,27 @@ class Table:
             if random.random() > 0.4:
                 pyautogui.moveTo(random.randrange(300, 800), random.randrange(100, 700))
 
-    def check_image(self, isLeft, i):
-        img_path = "temp/{}.png".format(i)
-        card_pos = self.left_card_pos if isLeft else self.right_card_pos
-        snapshot = ImageGrab.grab(card_pos)
-        snapshot.save(img_path)
-        img = tf.keras.utils.load_img(
-            img_path, target_size=(card_img_height, card_img_width)
-        )
-        img_array = tf.keras.utils.img_to_array(img)
-        img_array = tf.expand_dims(img_array, 0)
+    # def check_image(self, isLeft, i):
+    #     img_path = "temp/{}.png".format(i)
+    #     card_pos = self.left_card_pos if isLeft else self.right_card_pos
+    #     snapshot = ImageGrab.grab(card_pos)
+    #     snapshot.save(img_path)
+    #     img = tf.keras.utils.load_img(
+    #         img_path, target_size=(card_img_height, card_img_width)
+    #     )
+    #     img_array = tf.keras.utils.img_to_array(img)
+    #     img_array = tf.expand_dims(img_array, 0)
 
-        predictions = self.card_model.predict(img_array)
-        score = tf.nn.softmax(predictions[0])
+    #     predictions = self.card_model.predict(img_array)
+    #     score = tf.nn.softmax(predictions[0])
 
-        # if self.card_class_names[np.argmax(score)] != "NoCard":
-        #     img_path2 = "temp/{}-{}.png".format(
-        #         self.card_class_names[np.argmax(score)], i
-        #     )
-        #     snapshot.save(img_path2)
+    #     # if self.card_class_names[np.argmax(score)] != "NoCard":
+    #     #     img_path2 = "temp/{}-{}.png".format(
+    #     #         self.card_class_names[np.argmax(score)], i
+    #     #     )
+    #     #     snapshot.save(img_path2)
 
-        os.remove(img_path)
+    #     os.remove(img_path)
 
     def get_action_button(self, is_call_button):
         img_path = "temp/{}.png".format("call" if is_call_button else "fold")
