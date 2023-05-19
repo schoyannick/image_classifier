@@ -418,9 +418,6 @@ class Table:
         card = self.card_class_names[np.argmax(score)]
         if card != "NoCard":
             img_path2 = "{}.png".format(i)
-
-            if not os.path.exists(card):
-                os.makedirs("temp/" + card)
             snapshot.save("temp/" + card + "/" + img_path2)
 
         try:
