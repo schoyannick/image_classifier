@@ -11,17 +11,17 @@ from my_types import Card, Suit
 
 from table_config import TableConfig
 import random
-
+import keyboard
 
 # pos = (850, 450, 955, 520)
 # img_path = "temp/0.png"
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
 
-left_card = Card(Suit.SPADE, "King")
-right_card = Card(Suit.SPADE, "Five")
-hand_strength = HandStrength()
-str = hand_strength.get_hand_strength(left_card, right_card)
+# left_card = Card(Suit.SPADE, "Ace")
+# right_card = Card(Suit.DIAMOND, "Ace")
+# hand_strength = HandStrength()
+# str = hand_strength.get_hand_strength(left_card, right_card)
 
 # (card_model, card_class_names) = CardClassifier().train()
 card_class_names = CardClassifier().load_class_names()
@@ -96,7 +96,13 @@ table4 = table_config.get_table_4(
     action_class_names,
 )
 
-while 1:
+run = True
+
+
+while run:
+    # if keyboard.is_pressed('f5'):
+    #     run = not run
+
     if random.random() > 0.4:
         table1.handle_action()
         time.sleep(random.uniform(0.1, 0.15))
@@ -114,7 +120,7 @@ while 1:
         time.sleep(random.uniform(0, 0.1))
         table1.handle_action()
 
-    if random.random() > 0.8:
+    if random.random() > 0.4:
         pyautogui.moveTo(
             random.randrange(0, 1000), random.randrange(0, 1000), duration=0.5
         )

@@ -130,7 +130,10 @@ class Table:
         predictions = model.predict(img_array)
         score = tf.nn.softmax(predictions[0])
 
-        os.remove(img_path)
+        try:
+            os.remove(img_path)
+        except OSError:
+            pass
 
         return score
 
@@ -236,10 +239,10 @@ class Table:
 
     def decide_action(self) -> Action:
         strength = self.get_hand_strength()
-        if strength >= 0.8 and random.random() > 0.4:
+        if strength >= 0.9 and random.random() > 0.4:
             return Action.ALL_IN
 
-        if strength < 0.3 and random.random() > 0.4:
+        if strength < 0.4 and random.random() > 0.4:
             return Action.FOLD
 
         my_turn = self.is_my_turn()
@@ -247,7 +250,7 @@ class Table:
             return Action.NOTHING
 
         if self.my_table_position == DealerPosition.UTG:
-            if strength >= random.uniform(0.72, 0.74):
+            if strength >= random.uniform(0.74, 0.76):
                 return Action.ALL_IN
             else:
                 return Action.FOLD
@@ -261,7 +264,7 @@ class Table:
                     else:
                         return Action.FOLD
                 case 1:
-                    if strength >= random.uniform(0.77, 0.8):
+                    if strength >= 0.85:
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
@@ -274,29 +277,30 @@ class Table:
                     else:
                         return Action.FOLD
                 case 1:
-                    if strength >= random.uniform(0.75, 0.8):
+                    if strength >= random.uniform(0.77, 0.8):
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
                 case 2:
-                    if strength >= 0.8:
+                    if strength >= 0.85:
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
 
         match all_in_count:
-            case 0:
-                return Action.FOLD
             case 1:
                 if strength >= random.uniform(0.62, 0.64):
                     return Action.ALL_IN
                 else:
                     return Action.FOLD
             case 2 | 3:
-                if strength >= 0.8:
+                if strength >= 0.85:
                     return Action.ALL_IN
                 else:
                     return Action.FOLD
+
+        if strength >= 0.85:
+            return Action.ALL_IN
         return Action.FOLD
 
     def move_mouse(self, x, y):
@@ -413,13 +417,16 @@ class Table:
 
         card = self.card_class_names[np.argmax(score)]
         if card != "NoCard":
-            img_path2 = "card/{}.png".format(i)
+            img_path2 = "{}.png".format(i)
 
             if not os.path.exists(card):
-                os.makedirs(card)
-            snapshot.save(card + "/" + img_path2)
+                os.makedirs("temp/" + card)
+            snapshot.save("temp/" + card + "/" + img_path2)
 
-        os.remove(img_path)
+        try:
+            os.remove(img_path)
+        except OSError:
+            pass
 
     def get_action_button(self, is_call_button):
         img_path = "temp/{}.png".format("call" if is_call_button else "fold")
