@@ -18,16 +18,10 @@ import keyboard
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
 
-# left_card = Card(Suit.SPADE, "Two")
-# right_card = Card(Suit.HEART, "Two")
-
-# first_card = Card(Suit.DIAMOND, "Queen")
-# second_card = Card(Suit.DIAMOND, "Three")
-# third_card = Card(Suit.HEART, "Four")
-# board = [first_card, second_card, third_card]
-
+# left_card = Card(Suit.SPADE, "Seven")
+# right_card = Card(Suit.SPADE, "Nine")
 # hand_strength = HandStrength()
-# str = hand_strength.hand_strength_post_flop(left_card, right_card, board)
+# str = hand_strength.get_hand_strength(left_card, right_card)
 
 # (card_model, card_class_names) = CardClassifier().train()
 card_class_names = CardClassifier().load_class_names()
@@ -115,8 +109,8 @@ while True:
 
         for table in tables:
             table.handle_action()
-            if random.random() > 0.2:
-                time.sleep(random.uniform(0.01, 0.2))
+            # if random.random() > 0.2:
+            # time.sleep(random.uniform(0.01, 0.2))
 
         if random.random() > 0.2:
             pyautogui.moveTo(

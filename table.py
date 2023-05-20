@@ -309,7 +309,7 @@ class Table:
 
     def click_call(self):
         left, top, right, bottom = self.call_pos
-        use_hot_key = random.random() < 0.4
+        use_hot_key = random.random() > 0.8
         if use_hot_key:
             x = math.floor(
                 (left + right) / 2 + random.uniform(-10, 10)
