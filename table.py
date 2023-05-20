@@ -383,7 +383,7 @@ class Table:
                 self.right_card = None
                 return
 
-            if random.random() > 0.8:
+            if random.random() > 0.95:
                 self.check_image(True, self.i)
                 self.i += 1
                 self.check_image(False, self.i)
