@@ -239,10 +239,10 @@ class Table:
 
     def decide_action(self) -> Action:
         strength = self.get_hand_strength()
-        if strength >= 0.9 and random.random() > 0.4:
+        if strength >= 0.85 and random.random() > 0.4:
             return Action.ALL_IN
 
-        if strength < 0.4 and random.random() > 0.4:
+        if strength < 0.4 and random.random() > 0.7:
             return Action.FOLD
 
         my_turn = self.is_my_turn()
@@ -383,10 +383,11 @@ class Table:
                 self.right_card = None
                 return
 
-            self.check_image(True, self.i)
-            self.i += 1
-            self.check_image(False, self.i)
-            self.i += 1
+            if random.random() > 0.8:
+                self.check_image(True, self.i)
+                self.i += 1
+                self.check_image(False, self.i)
+                self.i += 1
 
             my_action = self.decide_action()
 

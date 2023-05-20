@@ -110,20 +110,13 @@ while True:
         run = not run
 
     if run:
-        if random.random() > 0.4:
-            table1.handle_action()
-            time.sleep(random.uniform(0.1, 0.15))
-            table2.handle_action()
-            time.sleep(random.uniform(0.2, 0.2))
-            table3.handle_action()
-            table4.handle_action()
-        else:
-            table3.handle_action()
-            time.sleep(random.uniform(0.1, 0.25))
-            table2.handle_action()
-            table4.handle_action()
-            time.sleep(random.uniform(0, 0.1))
-            table1.handle_action()
+        tables = [table1, table2, table3, table4]
+        random.shuffle(tables)
+
+        for table in tables:
+            table.handle_action()
+            if random.random() > 0.2:
+                time.sleep(random.uniform(0.01, 0.2))
 
         if random.random() > 0.2:
             pyautogui.moveTo(
