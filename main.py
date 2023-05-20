@@ -18,10 +18,16 @@ import keyboard
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
 
-# left_card = Card(Suit.SPADE, "Queen")
-# right_card = Card(Suit.SPADE, "Ten")
+# left_card = Card(Suit.SPADE, "Two")
+# right_card = Card(Suit.HEART, "Two")
+
+# first_card = Card(Suit.DIAMOND, "Queen")
+# second_card = Card(Suit.DIAMOND, "Three")
+# third_card = Card(Suit.HEART, "Four")
+# board = [first_card, second_card, third_card]
+
 # hand_strength = HandStrength()
-# str = hand_strength.get_hand_strength(left_card, right_card)
+# str = hand_strength.hand_strength_post_flop(left_card, right_card, board)
 
 # (card_model, card_class_names) = CardClassifier().train()
 card_class_names = CardClassifier().load_class_names()
@@ -99,26 +105,27 @@ table4 = table_config.get_table_4(
 run = True
 
 
-while run:
-    # if keyboard.is_pressed('f5'):
-    #     run = not run
+while True:
+    if keyboard.is_pressed("f5"):
+        run = not run
 
-    if random.random() > 0.4:
-        table1.handle_action()
-        time.sleep(random.uniform(0.1, 0.15))
-        table2.handle_action()
-        time.sleep(random.uniform(0.2, 0.2))
-        table3.handle_action()
-        table4.handle_action()
-    else:
-        table3.handle_action()
-        time.sleep(random.uniform(0.1, 0.25))
-        table2.handle_action()
-        table4.handle_action()
-        time.sleep(random.uniform(0, 0.1))
-        table1.handle_action()
+    if run:
+        if random.random() > 0.4:
+            table1.handle_action()
+            time.sleep(random.uniform(0.1, 0.15))
+            table2.handle_action()
+            time.sleep(random.uniform(0.2, 0.2))
+            table3.handle_action()
+            table4.handle_action()
+        else:
+            table3.handle_action()
+            time.sleep(random.uniform(0.1, 0.25))
+            table2.handle_action()
+            table4.handle_action()
+            time.sleep(random.uniform(0, 0.1))
+            table1.handle_action()
 
-    if random.random() > 0.2:
-        pyautogui.moveTo(
-            random.randrange(0, 1000), random.randrange(0, 1000), duration=0.5
-        )
+        if random.random() > 0.2:
+            pyautogui.moveTo(
+                random.randrange(0, 1000), random.randrange(0, 1000), duration=0.5
+            )
