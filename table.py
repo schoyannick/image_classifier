@@ -309,8 +309,8 @@ class Table:
 
     def click_call(self):
         left, top, right, bottom = self.call_pos
-        use_hot_key = random.random() > 0.8
-        if use_hot_key:
+        use_hot_key = random.random() > 0.9
+        if False:
             x = math.floor(
                 (left + right) / 2 + random.uniform(-10, 10)
             ) - random.randint(50, 150)
@@ -399,8 +399,8 @@ class Table:
             else:
                 self.click_fold()
 
-            if random.random() > 0.4:
-                pyautogui.moveTo(random.randrange(300, 800), random.randrange(100, 700))
+            if random.random() > 0.8:
+                pyautogui.moveTo(random.randrange(0, 1000), random.randrange(0, 1000))
 
     def check_image(self, isLeft, i):
         img_path = "temp/{}.png".format(i)

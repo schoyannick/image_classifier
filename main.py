@@ -109,10 +109,3 @@ while True:
 
         for table in tables:
             table.handle_action()
-            # if random.random() > 0.2:
-            # time.sleep(random.uniform(0.01, 0.2))
-
-        if random.random() > 0.2:
-            pyautogui.moveTo(
-                random.randrange(0, 1000), random.randrange(0, 1000), duration=0.5
-            )
