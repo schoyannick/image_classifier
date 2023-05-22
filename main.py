@@ -1,3 +1,4 @@
+import os
 import time
 from PIL import ImageGrab
 import pyautogui
@@ -13,7 +14,7 @@ from table_config import TableConfig
 import random
 import keyboard
 
-# pos = (850, 450, 955, 520)
+# pos = (445, 320, 565, 385)
 # img_path = "temp/0.png"
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
@@ -101,11 +102,13 @@ run = True
 
 while True:
     if keyboard.is_pressed("f5"):
-        run = not run
+        exit()
 
     if run:
         tables = [table1, table2, table3, table4]
         random.shuffle(tables)
 
         for table in tables:
+            if random.random() > 0.8:
+                table.check_im_back()
             table.handle_action()

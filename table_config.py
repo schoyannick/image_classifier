@@ -32,6 +32,8 @@ class TableConfig:
         table1_bottom_dealer_pos = (545, 355, 565, 385)
         table1_left_dealer_pos = (350, 270, 370, 300)
 
+        table1_im_back_button_pos = (445, 320, 565, 385)
+
         return Table(
             table1_left_card_pos,
             table1_right_card_pos,
@@ -55,6 +57,7 @@ class TableConfig:
             table1_top_action_pos,
             table1_right_action_pos,
             table1_left_action_pos,
+            table1_im_back_button_pos,
         )
 
     def get_table_2(
@@ -122,6 +125,13 @@ class TableConfig:
             table2_top_dealer_pos[1] + 130 + 30,
         )
 
+        table2_im_back_button_pos = (
+            table2_left_card_pos[0] - 114,
+            table2_left_card_pos[1] - 66,
+            table2_left_card_pos[2] - 30,
+            table2_left_card_pos[3] - 45,
+        )
+
         return Table(
             table2_left_card_pos,
             table2_right_card_pos,
@@ -145,6 +155,7 @@ class TableConfig:
             table2_top_action_pos,
             table2_right_action_pos,
             table2_left_action_pos,
+            table2_im_back_button_pos,
         )
 
     def get_table_3(
@@ -232,6 +243,13 @@ class TableConfig:
             table3_top_dealer_pos[1] + 130 + 30,
         )
 
+        table3_im_back_button_pos = (
+            table3_left_card_pos[0] - 114,
+            table3_left_card_pos[1] - 66,
+            table3_left_card_pos[2] - 30,
+            table3_left_card_pos[3] - 45,
+        )
+
         return Table(
             table3_left_card_pos,
             table3_right_card_pos,
@@ -255,6 +273,7 @@ class TableConfig:
             table3_top_action_pos,
             table3_right_action_pos,
             table3_left_action_pos,
+            table3_im_back_button_pos,
         )
 
     def get_table_4(
@@ -335,11 +354,18 @@ class TableConfig:
             table4_top_dealer_pos[0] - 25 + 20,
             table4_top_dealer_pos[1] + 215 + 30,
         )
-        table3_left_dealer_pos = (
+        table4_left_dealer_pos = (
             table4_top_dealer_pos[0] - 220,
             table4_top_dealer_pos[1] + 130,
             table4_top_dealer_pos[0] - 220 + 20,
             table4_top_dealer_pos[1] + 130 + 30,
+        )
+
+        table4_im_back_button_pos = (
+            table4_left_card_pos[0] - 114,
+            table4_left_card_pos[1] - 66,
+            table4_left_card_pos[2] - 30,
+            table4_left_card_pos[3] - 45,
         )
 
         return Table(
@@ -352,7 +378,7 @@ class TableConfig:
             table4_top_dealer_pos,
             table4_right_dealer_pos,
             table4_bottom_dealer_pos,
-            table3_left_dealer_pos,
+            table4_left_dealer_pos,
             dealer_button_model,
             dealer_button_class_names,
             bet_button_model,
@@ -365,4 +391,5 @@ class TableConfig:
             table4_top_action_pos,
             table4_right_action_pos,
             table4_left_action_pos,
+            table4_im_back_button_pos,
         )

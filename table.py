@@ -89,6 +89,7 @@ class Table:
         top_action_pos,
         right_action_pos,
         left_action_pos,
+        im_back_button_pos,
     ):
         self.left_card_pos = left_card_pos
         self.right_card_pos = right_card_pos
@@ -117,6 +118,8 @@ class Table:
         self.top_action_pos = top_action_pos
         self.right_action_pos = right_action_pos
         self.left_action_pos = left_action_pos
+
+        self.im_back_button_pos = im_back_button_pos
 
         self.hand_strength = HandStrength()
 
@@ -401,6 +404,20 @@ class Table:
 
             if random.random() > 0.8:
                 pyautogui.moveTo(random.randrange(0, 1000), random.randrange(0, 1000))
+
+    def check_im_back(self):
+        score = self.get_image_score(
+            "temp/im_back.png",
+            self.im_back_button_pos,
+            bet_button_img_height,
+            bet_button_img_width,
+            self.bet_button_model,
+        )
+
+        name = self.bet_button_class_names[np.argmax(score)]
+
+        if name == 'ImBack':
+            self.move_mouse(self.im_back_button_pos[0] + 20, self.im_back_button_pos[1] + 20)
 
     def check_image(self, isLeft, i):
         img_path = "temp/{}.png".format(i)
