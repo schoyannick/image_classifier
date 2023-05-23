@@ -99,10 +99,9 @@ table4 = table_config.get_table_4(
 
 run = True
 
-
 while True:
-    if keyboard.is_pressed("f5"):
-        exit()
+    # if keyboard.is_pressed("f5"):
+    #     exit()
 
     if run:
         tables = [table1, table2, table3, table4]

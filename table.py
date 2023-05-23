@@ -416,8 +416,10 @@ class Table:
 
         name = self.bet_button_class_names[np.argmax(score)]
 
-        if name == 'ImBack':
-            self.move_mouse(self.im_back_button_pos[0] + 20, self.im_back_button_pos[1] + 20)
+        if name == "ImBack":
+            self.move_mouse(
+                self.im_back_button_pos[0] + 20, self.im_back_button_pos[1] + 20
+            )
 
     def check_image(self, isLeft, i):
         img_path = "temp/{}.png".format(i)
