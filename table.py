@@ -63,8 +63,6 @@ class Table:
     mouse_x = 0
     mouse_y = 0
 
-    i = 0
-
     def __init__(
         self,
         left_card_pos,
@@ -242,7 +240,7 @@ class Table:
 
     def decide_action(self) -> Action:
         strength = self.get_hand_strength()
-        if strength >= 0.85 and random.random() > 0.4:
+        if strength >= 0.85 and random.random() > 0.8:
             return Action.ALL_IN
 
         if strength < 0.4 and random.random() > 0.7:
@@ -253,7 +251,7 @@ class Table:
             return Action.NOTHING
 
         if self.my_table_position == DealerPosition.UTG:
-            if strength >= random.uniform(0.74, 0.76):
+            if strength >= 0.75:
                 return Action.ALL_IN
             else:
                 return Action.FOLD
@@ -262,7 +260,7 @@ class Table:
         if self.my_table_position == DealerPosition.BUTTON:
             match all_in_count:
                 case 0:
-                    if strength >= random.uniform(0.67, 0.69):
+                    if strength >= 0.68:
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
@@ -275,12 +273,12 @@ class Table:
         if self.my_table_position == DealerPosition.SMALL_BLIND:
             match all_in_count:
                 case 0:
-                    if strength >= random.uniform(0.55, 0.57):
+                    if strength >= 0.56:
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
                 case 1:
-                    if strength >= random.uniform(0.77, 0.8):
+                    if strength >= 0.8:
                         return Action.ALL_IN
                     else:
                         return Action.FOLD
@@ -292,7 +290,7 @@ class Table:
 
         match all_in_count:
             case 1:
-                if strength >= random.uniform(0.62, 0.64):
+                if strength >= 0.62:
                     return Action.ALL_IN
                 else:
                     return Action.FOLD
@@ -386,18 +384,14 @@ class Table:
                 self.right_card = None
                 return
 
-            if random.random() > 0.95:
-                self.check_image(True, self.i)
-                self.i += 1
-                self.check_image(False, self.i)
-                self.i += 1
-
             my_action = self.decide_action()
 
             if my_action == Action.NOTHING:
                 return
 
             if my_action == Action.ALL_IN:
+                self.check_image(True)
+                self.check_image(False)
                 self.click_call()
             else:
                 self.click_fold()
@@ -421,8 +415,8 @@ class Table:
                 self.im_back_button_pos[0] + 20, self.im_back_button_pos[1] + 20
             )
 
-    def check_image(self, isLeft, i):
-        img_path = "temp/{}.png".format(i)
+    def check_image(self, isLeft):
+        img_path = "temp/card-{}.png".format(random.randrange(1, 1000))
         card_pos = self.left_card_pos if isLeft else self.right_card_pos
         snapshot = ImageGrab.grab(card_pos)
         snapshot.save(img_path)
@@ -437,7 +431,7 @@ class Table:
 
         card = self.card_class_names[np.argmax(score)]
         if card != "NoCard":
-            img_path2 = "{}.png".format(i)
+            img_path2 = "card-{}.png".format(random.randrange(1, 999999))
             snapshot.save("temp/" + card + "/" + img_path2)
 
         try:
