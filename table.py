@@ -390,8 +390,8 @@ class Table:
                 return
 
             if my_action == Action.ALL_IN:
-                self.check_image(True)
-                self.check_image(False)
+                # self.check_image(True)
+                # self.check_image(False)
                 self.click_call()
             else:
                 self.click_fold()

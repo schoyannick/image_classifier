@@ -14,13 +14,13 @@ from table_config import TableConfig
 import random
 import keyboard
 
-# pos = (445, 320, 565, 385)
+# pos = (512, 433, 548, 477)
 # img_path = "temp/0.png"
 # snapshot = ImageGrab.grab(bbox=pos)
 # snapshot.save(img_path)
 
-# left_card = Card(Suit.SPADE, "Seven")
-# right_card = Card(Suit.SPADE, "Nine")
+# left_card = Card(Suit.SPADE, "Jack")
+# right_card = Card(Suit.SPADE, "Eight")
 # hand_strength = HandStrength()
 # str = hand_strength.get_hand_strength(left_card, right_card)
 
@@ -44,8 +44,15 @@ my_turn_class_names = MyTurnClassifier().load_class_names()
 action_model = ActionClassifier().load_model()
 action_class_names = ActionClassifier().load_class_names()
 
+RIGHT_SCREEN = [
+    (559, 386, 595, 430),
+    (1271, 386, 1307, 430),
+    (559, 906, 595, 950),
+    (1271, 906, 1307, 950),
+]
+
 table_config = TableConfig()
-table1 = table_config.get_table_1(
+table1 = table_config.get_config(
     card_model,
     card_class_names,
     dealer_button_model,
@@ -56,9 +63,10 @@ table1 = table_config.get_table_1(
     my_turn_class_names,
     action_model,
     action_class_names,
+    RIGHT_SCREEN[0],
 )
 
-table2 = table_config.get_table_2(
+table2 = table_config.get_config(
     card_model,
     card_class_names,
     dealer_button_model,
@@ -69,9 +77,10 @@ table2 = table_config.get_table_2(
     my_turn_class_names,
     action_model,
     action_class_names,
+    RIGHT_SCREEN[1],
 )
 
-table3 = table_config.get_table_3(
+table3 = table_config.get_config(
     card_model,
     card_class_names,
     dealer_button_model,
@@ -82,9 +91,10 @@ table3 = table_config.get_table_3(
     my_turn_class_names,
     action_model,
     action_class_names,
+    RIGHT_SCREEN[2],
 )
 
-table4 = table_config.get_table_4(
+table4 = table_config.get_config(
     card_model,
     card_class_names,
     dealer_button_model,
@@ -95,6 +105,7 @@ table4 = table_config.get_table_4(
     my_turn_class_names,
     action_model,
     action_class_names,
+    RIGHT_SCREEN[3],
 )
 
 run = True
