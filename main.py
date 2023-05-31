@@ -119,6 +119,9 @@ while True:
         random.shuffle(tables)
 
         for table in tables:
-            if random.random() > 0.8:
-                table.check_im_back()
-            table.handle_action()
+            try:
+                if random.random() > 0.8:
+                    table.check_im_back()
+                table.handle_action()
+            except:
+                pass
